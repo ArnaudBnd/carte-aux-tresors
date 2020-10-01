@@ -47,8 +47,8 @@ export function MapInit(props) {
         world[elmt[3]][elmt[2]] = '0'
 
         players.push({
-          x: parseInt(elmt[3]),
-          y: parseInt(elmt[2]),
+          x: parseInt(elmt[2]),
+          y: parseInt(elmt[3]),
           tresors: 0,
           orientation: elmt[4],
           movements: elmt[5].split(''),
@@ -86,35 +86,39 @@ export function MapInit(props) {
       if(button.style.display === 'none') {
         button.style.display = 'block'
       }
-      const newWorld = setPlayerIntoWorld(world, players, play)
 
-        return newWorld.map((elmt, i) => {
-          return (
-            <tr key={i} styles={{height: '50px'}}>{elmt.map((elmt1, j) => <td key={j} styles={{height: '50px'}}>{elmt1}</td>)}</tr>
-          )
-        })
-      // }
+      return setPlayerIntoWorld(world, players, play)
     }
   }
 
+  /**
+   * Positionnement des players
+   * @param world, players, play
+   */
   function setPlayerIntoWorld(world, players, play) {
     if(players.length > 0) {
       if(play) {
-        const copyWorld1 = [...world]
-        for(const player of players) {
-          copyWorld1[player.y][player.x] = 'A'
-        }
-        return copyWorld1
-      } else {
-        const copyWorld = [...world]
-
-        for(const player of players) {
-          copyWorld[player.y][player.x] = 'A'
-        }
-        return copyWorld
+        world.map(case1 => {
+          for(let i in case1) {
+            if(case1[i] == 'A') {
+              case1[i] = '0'
+            }
+          }
+        })
       }
+
+      for(const player of players) {
+        world[player.y][player.x] = 'A'
+      }
+
+      return world.map((elmt, i) => {
+        return (
+          <tr key={i} styles={{height: '50px'}}>{elmt.map((elmt1, j) => <td key={j} styles={{height: '50px'}}>{elmt1}</td>)}</tr>
+        )
+      })
     }
   }
+
 
 
 
@@ -162,15 +166,17 @@ export function MapInit(props) {
       })
       i++
     }
+
+    console.log('newPositionPlayer final', newPositionPlayer)    
     // New coordonné
     setState({...newState, players: newPositionPlayer, play: true})
   }
 
-  function changeNumberTresors(coordonnesTresor, tresors) {
-    console.log('coordonnesTresor', coordonnesTresor)
-    console.log('tresors', tresors)
-    return null
-  }
+  // function changeNumberTresors(coordonnesTresor, tresors) {
+  //   console.log('coordonnesTresor', coordonnesTresor)
+  //   console.log('tresors', tresors)
+  //   return null
+  // }
 
   function move(movement, world, player, tresors) {
     const worldMap = world
@@ -203,7 +209,7 @@ export function MapInit(props) {
 
                 player.y += -1
               } else {
-                console.log('erreur déplacament =>', worldMap[player.y-1][player.x])
+                console.log('erreur déplacament =>')
               }
             } else {
               console.log('player sorti de la map')
@@ -218,7 +224,6 @@ export function MapInit(props) {
                 // Vérification tresor
                 for(let i = 0; i < tresors.length; i++) {
                   if(tresors[i].x === player.x && tresors[i].y === player.y+1) {
-                    console.log('tresors[i].nbr', tresors[i].nbr)
                     if(tresors[i].nbr > 0) {
                       player.tresors += 1
                       tresors[i].nbr += -1
@@ -232,7 +237,7 @@ export function MapInit(props) {
                 }
                 player.y += +1
               } else {
-                console.log('erreur déplacament =>', worldMap[player.y-1][player.x])
+                console.log('erreur déplacament =>')
               }
             } else {
               console.log('player sorti de la map')
@@ -262,7 +267,7 @@ export function MapInit(props) {
 
                 player.x += -1
               } else {
-                console.log('erreur déplacament =>', worldMap[player.y][player.x-1])
+                console.log('erreur déplacament =>')
               }
             } else {
               console.log('player sorti de la map')
@@ -291,7 +296,7 @@ export function MapInit(props) {
 
                 player.x += 1
               } else {
-                console.log('erreur déplacament =>', worldMap[player.y][player.x+1])
+                console.log('erreur déplacament =>')
               }
             } else {
               console.log('player sorti de la map')
@@ -332,8 +337,6 @@ export function MapInit(props) {
         }
         break
     }
-    console.log('player final ', player)
-    console.log('tresors final', tresors)
     return player
   }
 
