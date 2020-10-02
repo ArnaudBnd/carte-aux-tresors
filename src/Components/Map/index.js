@@ -16,7 +16,9 @@ export function MapInit(props) {
   const { play, players, world } = state
 
   useEffect(() => {
-    initDataBoard(coordonnes)
+    if(coordonnes.length > 0) {
+      initDataBoard(coordonnes)
+    }
   }, [coordonnes])
 
   /**

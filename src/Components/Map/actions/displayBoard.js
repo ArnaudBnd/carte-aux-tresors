@@ -12,7 +12,6 @@ export function DisplayBoard({ players, world }) {
     }
 
     if(players.length > 0) {
-      console.log('here')
       return world.map((elmt, i) => {
         return (
           <tr key={i}
