@@ -9,11 +9,6 @@ export function MapInit(props) {
     mapW: '',
     players: [],
     play: false,
-    tresors: {
-      x: '',
-      y: '',
-      nbr: ''
-    }
   })
 
   useEffect(() => {
@@ -31,7 +26,8 @@ export function MapInit(props) {
     let players = []
     let tresors = []
 
-    coordonnes.map(elmt => {
+    coordonnes.map(element => {
+      const elmt = element[0].split('-')
       if(elmt[0].includes('C')) {
         mapH = elmt[2]
         mapW = elmt[1]
@@ -39,12 +35,14 @@ export function MapInit(props) {
         for (var i = 0; i < elmt[2]; i++) {
           let array = []
           for (var j = 0; j < elmt[1]; j++) {
-            array.push('0')
+            // array.push('0')
+            array.push({type : '0', tresor : 0})
           }
           world.push(array)
         }
       } else if(elmt[0].includes('A')){
-        world[elmt[3]][elmt[2]] = '0'
+        // world[elmt[3]][elmt[2]] = '0'
+        world[elmt[3]][elmt[2]] = {type : 'A', tresor : 0}
 
         players.push({
           x: parseInt(elmt[2]),
@@ -60,9 +58,10 @@ export function MapInit(props) {
           y: parseInt(elmt[2]),
           nbr: parseInt(elmt[3])
         })
-        world[elmt[2]][elmt[1]] = elmt[0] + '(' + elmt[3] + ')'
+        world[elmt[2]][elmt[1]] = {type : '0', tresor : parseInt(elmt[3])}
       } else {
-        world[elmt[2]][elmt[1]] = elmt[0]
+        // world[elmt[2]][elmt[1]] = elmt[0]
+        world[elmt[2]][elmt[1]] = {type : elmt[0], tresor : 0}
       }
     })
 
@@ -97,47 +96,21 @@ export function MapInit(props) {
    */
   function setPlayerIntoWorld(world, players, play) {
     if(players.length > 0) {
-      if(play) {
-        world.map(case1 => {
-          for(let i in case1) {
-            if(case1[i] == 'A') {
-              case1[i] = '0'
-            }
-          }
-        })
-      }
-
-      for(const player of players) {
-        world[player.y][player.x] = 'A'
-      }
-
       return world.map((elmt, i) => {
         return (
-          <tr key={i} styles={{height: '50px'}}>{elmt.map((elmt1, j) => <td key={j} styles={{height: '50px'}}>{elmt1}</td>)}</tr>
+          <tr key={i}
+              styles={{height: '50px'}}>
+              {elmt.map((elmt1, j) => 
+                <td key={j}
+                  styles={{height: '50px'}}>
+                  {elmt1.tresor!=0?'T('+elmt1.tresor+')':elmt1.type}
+                </td>
+              )}
+          </tr>
         )
       })
     }
   }
-
-
-
-
-  // while (no_more_movement == false) {
-  //   no_more_movement = true
-
-  //   players = players.map(player => {
-  //     // S'il y a un movement
-  //     if(player.movements[i] !== undefined) {
-  //       player = move(player.movements[i], world, player)
-  //       // Tant qu'il y pas de dernier mouvement
-  //       if(player.movements[i+1] !== undefined) {
-  //         no_more_movement = false
-  //       }
-  //     }
-  //     console.log('player', JSON.parse(JSON.stringify(player)))
-  //   })
-  //   i++
-  // }
 
   /**
    * Jeu de(s) l'aventurier(s) en fonction des déplacements récupérés
@@ -147,7 +120,6 @@ export function MapInit(props) {
     let no_more_movement = false
     let i = 0
     const newPositionPlayer = []
-    const newState = {...state}
 
     while (no_more_movement == false) {
       no_more_movement = true
@@ -167,9 +139,7 @@ export function MapInit(props) {
       i++
     }
 
-    console.log('newPositionPlayer final', newPositionPlayer)    
-    // New coordonné
-    setState({...newState, players: newPositionPlayer, play: true})
+    setState({...state})
   }
 
   // function changeNumberTresors(coordonnesTresor, tresors) {
@@ -178,9 +148,7 @@ export function MapInit(props) {
   //   return null
   // }
 
-  function move(movement, world, player, tresors) {
-    const worldMap = world
-
+  function move(movement, worldMap, player, tresors) {
     switch (movement) {
       case 'A':
         // Avancer
@@ -188,28 +156,19 @@ export function MapInit(props) {
           case 'N':
             // Si il sort pas de la map
             if(player.y-1 >= 0) {
-              if(worldMap[player.y-1][player.x] === '0') {
-                 player.y += -1
-              } else if(worldMap[player.y-1][player.x].includes('T')){
-
+              if(worldMap[player.y-1][player.x].tresor !== 0){
                 // Vérification tresor
-                for(let i = 0; i < tresors.length; i++) {
-                  if(tresors[i].x === player.x && tresors[i].y === player.y-1) {
-                    if(tresors[i].nbr > 0) {
-                      player.tresors += 1
-                      tresors[i].nbr += -1
-                      if(tresors[i].nbr == 0) {
-                        worldMap[player.y-1][player.x] = '0'
-                      }
-                    }
-                  } else {
-                    console.log('Pas de tresors')
-                  }
-                }
-
+                player.tresors += 1
+                worldMap[player.y-1][player.x].tresor += -1
+                worldMap[player.y][player.x].type = "0"
                 player.y += -1
+                worldMap[player.y][player.x].type = "A"
+              } else if(worldMap[player.y-1][player.x].type === '0') {
+                worldMap[player.y][player.x].type = "0"
+                player.y += -1
+                worldMap[player.y][player.x].type = "A"
               } else {
-                console.log('erreur déplacament =>')
+                console.log('erreur déplacament =>' )
               }
             } else {
               console.log('player sorti de la map')
@@ -218,26 +177,19 @@ export function MapInit(props) {
           case 'S':
             // Si il sort pas de la map
             if(player.y+1 < worldMap.length) {
-              if(worldMap[player.y+1][player.x] === '0') {
-                 player.y += +1
-              } else if(worldMap[player.y+1][player.x].includes('T')) {
+              if(worldMap[player.y+1][player.x].tresor !== 0) {
                 // Vérification tresor
-                for(let i = 0; i < tresors.length; i++) {
-                  if(tresors[i].x === player.x && tresors[i].y === player.y+1) {
-                    if(tresors[i].nbr > 0) {
-                      player.tresors += 1
-                      tresors[i].nbr += -1
-                      if(tresors[i].nbr == 0) {
-                        worldMap[player.y+1][player.x] = '0'
-                      }
-                    } 
-                  } else {
-                    console.log('Pas de tresors')
-                  }
-                }
+                player.tresors += 1
+                worldMap[player.y+1][player.x].tresor += -1
+                worldMap[player.y][player.x].type = "0"
                 player.y += +1
+                worldMap[player.y][player.x].type = "A"
+              } else if(worldMap[player.y+1][player.x].type === '0') {
+                worldMap[player.y][player.x].type = "0"
+                player.y += +1
+                worldMap[player.y][player.x].type = "A"
               } else {
-                console.log('erreur déplacament =>')
+                console.log('Joueur a rencontré un obstacle')
               }
             } else {
               console.log('player sorti de la map')
@@ -246,28 +198,19 @@ export function MapInit(props) {
           case 'O':           
             // Si il sort pas de la map
             if(player.x-1 >= 0) {
-              if(worldMap[player.y][player.x-1] === '0') {
-                player.x += -1
-              } else if(worldMap[player.y][player.x-1].includes('T')){
-
+              if(worldMap[player.y][player.x-1].tresor !== 0){
                 // Vérification tresor
-                for(let i = 0; i < tresors.length; i++) {
-                  if(tresors[i].x === player.x-1 && tresors[i].y === player.y) {
-                    if(tresors[i].nbr > 0) {
-                      player.tresors += 1
-                      tresors[i].nbr += -1
-                      if(tresors[i].nbr == 0) {
-                        worldMap[player.y][player.x-1] = '0'
-                      }
-                    }
-                  } else {
-                    console.log('Pas de tresors')
-                  }
-                }
-
+                player.tresors += 1
+                worldMap[player.y][player.x-1].tresor += -1
+                worldMap[player.y][player.x].type = "0"
                 player.x += -1
+                worldMap[player.y][player.x].type = "A"
+              } else if(worldMap[player.y][player.x-1].type === '0') {
+                worldMap[player.y][player.x].type = "0"
+                player.x += -1
+                worldMap[player.y][player.x].type = "A"
               } else {
-                console.log('erreur déplacament =>')
+                console.log('Joueur a rencontré un obstacle')
               }
             } else {
               console.log('player sorti de la map')
@@ -276,27 +219,19 @@ export function MapInit(props) {
           case 'E':
             // Si il sort pas de la map
             if(player.x+1 < worldMap[player.y].length) {
-              if(worldMap[player.y][player.x+1] === '0') {
-                 player.x += 1
-              } else if(worldMap[player.y][player.x+1].includes('T')){
+              if(worldMap[player.y][player.x+1].tresor !== 0){
                 // Vérification tresor
-                for(let i = 0; i < tresors.length; i++) {
-                  if(tresors[i].x === player.x+1 && tresors[i].y === player.y) {
-                    if(tresors[i].nbr > 0) {
-                      player.tresors += 1
-                      tresors[i].nbr += -1
-                      if(tresors[i].nbr == 0) {
-                        worldMap[player.y][player.x+1] = '0'
-                      }
-                    }
-                  } else {
-                    console.log('Pas de tresors')
-                  }
-                }
-
+                player.tresors += 1
+                worldMap[player.y][player.x+1].tresor += -1
+                worldMap[player.y][player.x].type = "0"
                 player.x += 1
+                worldMap[player.y][player.x].type = "A"
+              } else if(worldMap[player.y][player.x+1].type === '0') {
+                worldMap[player.y][player.x].type = "0"
+                player.x += 1
+                worldMap[player.y][player.x].type = "A"
               } else {
-                console.log('erreur déplacament =>')
+                console.log('Joueur a rencontré un obstacle')
               }
             } else {
               console.log('player sorti de la map')
@@ -337,6 +272,7 @@ export function MapInit(props) {
         }
         break
     }
+
     return player
   }
 

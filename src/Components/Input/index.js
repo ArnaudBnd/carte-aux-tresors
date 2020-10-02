@@ -19,7 +19,7 @@ export function InputFolder() {
       const suppressComment = []
 
       textSplit.map(elmt => {
-        if(elmt.search('#') === 0) {
+        if(elmt.search('#') === 0 | elmt==['']) {
           return
         } else {
           suppressComment.push(elmt.toUpperCase().split(' - '))
