@@ -10,6 +10,7 @@ export function MapInit(props) {
     players: [],
     play: false,
   })
+  const { play, players, world } = state
 
   useEffect(() => {
     initDataBoard(coordonnes)
@@ -35,13 +36,11 @@ export function MapInit(props) {
         for (var i = 0; i < elmt[2]; i++) {
           let array = []
           for (var j = 0; j < elmt[1]; j++) {
-            // array.push('0')
             array.push({type : '0', tresor : 0})
           }
           world.push(array)
         }
       } else if(elmt[0].includes('A')){
-        // world[elmt[3]][elmt[2]] = '0'
         world[elmt[3]][elmt[2]] = {type : 'A', tresor : 0}
 
         players.push({
@@ -60,7 +59,6 @@ export function MapInit(props) {
         })
         world[elmt[2]][elmt[1]] = {type : '0', tresor : parseInt(elmt[3])}
       } else {
-        // world[elmt[2]][elmt[1]] = elmt[0]
         world[elmt[2]][elmt[1]] = {type : elmt[0], tresor : 0}
       }
     })
@@ -75,26 +73,26 @@ export function MapInit(props) {
   }
 
   /**
-   * Initialisation du tableau avec les coordonnés
+   * Affichage de la map
    */
   function initBoard() {
     const button = document.getElementById('buttonPlayGame')
-    const { world, players, play } = state
+    const { world, players } = state
 
     if(world.length !== 0) {
       if(button.style.display === 'none') {
         button.style.display = 'block'
       }
 
-      return setPlayerIntoWorld(world, players, play)
+      return displayWorld(world, players)
     }
   }
 
   /**
-   * Positionnement des players
+   * Rendu de la carte
    * @param world, players, play
    */
-  function setPlayerIntoWorld(world, players, play) {
+  function displayWorld(world, players) {
     if(players.length > 0) {
       return world.map((elmt, i) => {
         return (
@@ -113,51 +111,62 @@ export function MapInit(props) {
   }
 
   /**
+   * Affichage du fichier de sorti dans la console
+   */
+  function finalCoordonnesToDisplay(players, world) {
+    let coordonnesFinal = []
+
+    players.forEach((player, index) => {
+      coordonnesFinal.push('A' + ' - ' + player.name + ' - ' + player.x + ' - ' + player.y + ' - ' + player.orientation + ' - ' + player.tresors + '\n')
+    })
+
+    return (
+      <div style={{textAlign: 'center'}}>
+        <h1>
+          Résultat:
+        </h1>
+        <h4 style={{whiteSpace: 'pre'}}>
+          {coordonnesFinal}
+        </h4>
+      </div>
+    )
+  }
+
+  /**
    * Jeu de(s) l'aventurier(s) en fonction des déplacements récupérés
    */
   function playMovement() {
     const { players, world, tresors } = state
     let no_more_movement = false
     let i = 0
-    const newPositionPlayer = []
 
     while (no_more_movement == false) {
       no_more_movement = true
 
       players.forEach((player, index) => {
-        // S'il y a un movement
         if(players[index].movements[i] !== undefined) {
           players[index] = move(players[index].movements[i], world, players[index], tresors)
-          // Tant qu'il y pas de dernier mouvement
           if(players[index].movements[i+1] !== undefined) {
             no_more_movement = false
-          } else {
-            newPositionPlayer.push(players[index])
           }
         }
       })
       i++
     }
-
-    setState({...state})
+    setState({...state, play: true})
   }
 
-  // function changeNumberTresors(coordonnesTresor, tresors) {
-  //   console.log('coordonnesTresor', coordonnesTresor)
-  //   console.log('tresors', tresors)
-  //   return null
-  // }
-
+  /**
+   * Déplacement de(s) player(s)
+   * @param movement, worldMap, player, tresors
+   */
   function move(movement, worldMap, player, tresors) {
     switch (movement) {
       case 'A':
-        // Avancer
         switch (player.orientation) {
           case 'N':
-            // Si il sort pas de la map
             if(player.y-1 >= 0) {
               if(worldMap[player.y-1][player.x].tresor !== 0){
-                // Vérification tresor
                 player.tresors += 1
                 worldMap[player.y-1][player.x].tresor += -1
                 worldMap[player.y][player.x].type = "0"
@@ -175,10 +184,8 @@ export function MapInit(props) {
             }
             break
           case 'S':
-            // Si il sort pas de la map
             if(player.y+1 < worldMap.length) {
               if(worldMap[player.y+1][player.x].tresor !== 0) {
-                // Vérification tresor
                 player.tresors += 1
                 worldMap[player.y+1][player.x].tresor += -1
                 worldMap[player.y][player.x].type = "0"
@@ -196,10 +203,8 @@ export function MapInit(props) {
             }
             break
           case 'O':           
-            // Si il sort pas de la map
             if(player.x-1 >= 0) {
               if(worldMap[player.y][player.x-1].tresor !== 0){
-                // Vérification tresor
                 player.tresors += 1
                 worldMap[player.y][player.x-1].tresor += -1
                 worldMap[player.y][player.x].type = "0"
@@ -217,10 +222,8 @@ export function MapInit(props) {
             }
             break
           case 'E':
-            // Si il sort pas de la map
             if(player.x+1 < worldMap[player.y].length) {
               if(worldMap[player.y][player.x+1].tresor !== 0){
-                // Vérification tresor
                 player.tresors += 1
                 worldMap[player.y][player.x+1].tresor += -1
                 worldMap[player.y][player.x].type = "0"
@@ -284,12 +287,14 @@ export function MapInit(props) {
         </tbody>
       </table>
       <br />
-      <button 
-        id="buttonPlayGame"
-        style={{ display: 'none', margin: '0 auto' }}
-        onClick={() => playMovement()}>
-        PLAY
-      </button>
+      { play ? 
+          finalCoordonnesToDisplay(players, world) : 
+          <button 
+            id="buttonPlayGame"
+            style={{ display: 'none', margin: '0 auto' }}
+            onClick={() => playMovement()}>
+            PLAY
+      </button>}
     </div>
   )
 }
