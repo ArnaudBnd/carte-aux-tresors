@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { move } from './actions/movePlayer' 
+import { move } from './actions/movePlayer'
+import { DisplayBoard } from './actions/displayBoard'
+import { DisplayFinalPosition } from './actions/displayFinalPosition'
 import './index.css'
 
 export function MapInit(props) {
@@ -74,66 +76,6 @@ export function MapInit(props) {
   }
 
   /**
-   * Affichage de la map
-   */
-  function initBoard() {
-    const button = document.getElementById('buttonPlayGame')
-    const { world, players } = state
-
-    if(world.length !== 0) {
-      if(button.style.display === 'none') {
-        button.style.display = 'block'
-      }
-
-      return displayWorld(world, players)
-    }
-  }
-
-  /**
-   * Rendu de la carte
-   * @param world, players, play
-   */
-  function displayWorld(world, players) {
-    if(players.length > 0) {
-      return world.map((elmt, i) => {
-        return (
-          <tr key={i}
-              styles={{height: '50px'}}>
-              {elmt.map((elmt1, j) => 
-                <td key={j}
-                  styles={{height: '50px'}}>
-                  {elmt1.tresor!=0?'T('+elmt1.tresor+')':elmt1.type}
-                </td>
-              )}
-          </tr>
-        )
-      })
-    }
-  }
-
-  /**
-   * Affichage du fichier de sorti dans la console
-   */
-  function finalCoordonnesToDisplay(players, world) {
-    let coordonnesFinal = []
-
-    players.forEach((player, index) => {
-      coordonnesFinal.push('A' + ' - ' + player.name + ' - ' + player.x + ' - ' + player.y + ' - ' + player.orientation + ' - ' + player.tresors + '\n')
-    })
-
-    return (
-      <div style={{textAlign: 'center'}}>
-        <h1>
-          Résultat:
-        </h1>
-        <h4 style={{whiteSpace: 'pre'}}>
-          {coordonnesFinal}
-        </h4>
-      </div>
-    )
-  }
-
-  /**
    * Jeu de(s) l'aventurier(s) en fonction des déplacements récupérés
    */
   function playMovement() {
@@ -161,12 +103,12 @@ export function MapInit(props) {
     <div>
       <table>
         <tbody>
-          {initBoard()}
+          {world.length && players.length > 0 ? <DisplayBoard world={world} players={players} /> : null} 
         </tbody>
       </table>
       <br />
       { play ? 
-          finalCoordonnesToDisplay(players, world) : 
+          <DisplayFinalPosition world={world} players={players} /> : 
           <button 
             id="buttonPlayGame"
             style={{ display: 'none', margin: '0 auto' }}
