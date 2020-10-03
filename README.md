@@ -5,7 +5,7 @@
 * npm start
 ```
 
-## Lists des tests a effectuer :
+## Lists des tests à effectuer :
 
 * test_collision_joueur.txt:
 Ce test va vérifier que les joueurs ne rentrent pas en collision.
@@ -16,7 +16,7 @@ Ce test va vérifier que le joueur ne rentre pas en collision avec une montagne.
 * test_mis_en_page.txt:
 Ce test vérifie la mise en page du jeu.
 
-* test_plus_tresor.txt
+* test_plus_tresor.txt:
 Ce test va vérifier:
 	- Récupération d'un trésor lorsqu'un joueur arrive dessus.
 	- Diminution d'un trésor sur la case lorsqu'un joueur en à récupéré un.
