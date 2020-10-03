@@ -26,6 +26,8 @@ export function InputFolder() {
         }
       })
 
+      console.log('suppressComment', suppressComment)
+
       setMapCoordonnes(suppressComment)
     }
 
@@ -34,7 +36,7 @@ export function InputFolder() {
 
   return (
     <div>
-      <button onClick={handleClick}>
+      <button id="buttonDownloadFile" onClick={handleClick}>
         Upload a file
       </button>
       <input type="file"
