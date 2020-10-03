@@ -4,8 +4,7 @@ import { DisplayBoard } from './actions/displayBoard'
 import { DisplayFinalPosition } from './actions/displayFinalPosition'
 import './index.css'
 
-export function MapInit(props) {
-  const { coordonnes } = props
+export function MapInit({ coordonnes }) {
   const [state, setState] = useState({
     world: [],
     mapH: '',

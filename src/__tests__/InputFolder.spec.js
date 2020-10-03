@@ -22,7 +22,7 @@ describe("InputFolder", () => {
    expect(toJson(wrapper)).toMatchSnapshot()
   })
 
-  it('contains a button', () => {
+  it('contains a button Upload a file', () => {
     const button = <button> Upload a file </button>
     expect(wrapper.containsMatchingElement(button)).toBe(true)
   })
