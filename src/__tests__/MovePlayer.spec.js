@@ -27,71 +27,224 @@ describe("Movement ", () => {
     }
   })
 
-  it('should block player', () => {
-    let player = {movements: ["A"],
-                  name: "test",
-                  orientation: "E",
-                  tresors: 0,
-                  x: 1,
-                  y: 1};
-    worldMap[1][1] = {type:"A", tresor:0}
-    worldMap[1][2] = {type:"A", tresor:0}
-    expected_worldMap[1][1] = {type:"A", tresor:0}
-    expected_worldMap[1][2] = {type:"A", tresor:0}
-    var test = update_map_player(worldMap,player).worldMap
-    expect([...test]).toStrictEqual([...expected_worldMap])
-  })
-
- it('should advance to left', () => {
-    let player = {movements: ["A"],
-                  name: "test",
-                  orientation: "E",
-                  tresors: 0,
-                  x: 1,
-                  y: 1};
-    worldMap[1][1] = {type:"A", tresor:0}
-    expected_worldMap[1][2]={type:"A", tresor:0}
-    var test=update_map_player(worldMap,player).worldMap
-    expect(test).toStrictEqual(expected_worldMap)
-  })
-
-  it('should advance to right', () => {
-    let player = {movements: ["A"],
-                  name: "test",
-                  orientation: "O",
-                  tresors: 0,
-                  x: 1,
-                  y: 1};
-    worldMap[1][1] = {type:"A", tresor:0}
-    expected_worldMap[1][0]={type:"A", tresor:0}
-    var test=update_map_player(worldMap,player).worldMap
-    expect(test).toStrictEqual(expected_worldMap)
-  })
-
-  it('should advance to up', () => {
+  it('should increment tresor and player tresor ', () => {
     let player = {movements: ["A"],
                   name: "test",
                   orientation: "N",
                   tresors: 0,
                   x: 1,
-                  y: 1};
+                  y: 1}
+
+    let expected_player = {movements: ["A"],
+                  name: "test",
+                  orientation: "N",
+                  tresors: 1,
+                  x: 1,
+                  y: 0}
+
+    worldMap[0][1] = {type:"0", tresor:2}
     worldMap[1][1] = {type:"A", tresor:0}
-    expected_worldMap[0][1]={type:"A", tresor:0}
-    var test=update_map_player(worldMap,player).worldMap
-    expect(test).toStrictEqual(expected_worldMap)
+    expected_worldMap[0][1]={type:"A", tresor:1}
+
+    var test=update_map_player(worldMap,player)
+    expect(test).toStrictEqual({'worldMap' : expected_worldMap, 'player': expected_player, 'err': ""})
   })
 
-  it('should advance to down', () => {
+  it('shouldnt go out of map down', () => {
     let player = {movements: ["A"],
                   name: "test",
                   orientation: "S",
                   tresors: 0,
                   x: 1,
-                  y: 1};
+                  y: 2}            
+
+    worldMap[2][1] = {type:"A", tresor:0}
+    expected_worldMap[2][1] = {type:"A", tresor:0}
+
+    var test = update_map_player(worldMap,player)
+
+    expect(test).toStrictEqual({'worldMap' : expected_worldMap, 'player': player, 'err': "player sorti de la map"})
+  })
+
+  it('shouldnt go out of map down', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "S",
+                  tresors: 0,
+                  x: 1,
+                  y: 2}            
+
+    worldMap[2][1] = {type:"A", tresor:0}
+    expected_worldMap[2][1] = {type:"A", tresor:0}
+
+    var test = update_map_player(worldMap,player)
+
+    expect(test).toStrictEqual({'worldMap' : expected_worldMap, 'player': player, 'err': "player sorti de la map"})
+
+  })
+
+  it('shouldnt go out of map up', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "N",
+                  tresors: 0,
+                  x: 2,
+                  y: 0}            
+
+    worldMap[0][2] = {type:"A", tresor:0}
+    expected_worldMap[0][2] = {type:"A", tresor:0}
+
+    var test = update_map_player(worldMap,player)
+
+    expect(test).toStrictEqual({'worldMap' : expected_worldMap, 'player': player, 'err': "player sorti de la map"})
+  })
+
+   it('shouldnt go out of map left', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "N",
+                  tresors: 0,
+                  x: 1,
+                  y: 0}            
+
+    worldMap[0][1] = {type:"A", tresor:0}
+    expected_worldMap[0][1] = {type:"A", tresor:0}
+
+    var test = update_map_player(worldMap,player)
+
+    expect(test).toStrictEqual({'worldMap' : expected_worldMap, 'player': player, 'err': "player sorti de la map"})
+  })
+
+   it('shouldnt go out of map right', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "N",
+                  tresors: 0,
+                  x: 2,
+                  y: 0}            
+
+    worldMap[0][2] = {type:"A", tresor:0}
+    expected_worldMap[0][2] = {type:"A", tresor:0}
+
+    var test = update_map_player(worldMap,player)
+
+    expect(test).toStrictEqual({'worldMap' : expected_worldMap, 'player': player, 'err': "player sorti de la map"})
+  })
+
+  it('should block because of player', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "E",
+                  tresors: 0,
+                  x: 1,
+                  y: 1}
+    worldMap[1][1] = {type:"A", tresor:0}
+    worldMap[1][2] = {type:"A", tresor:0}
+    expected_worldMap[1][1] = {type:"A", tresor:0}
+    expected_worldMap[1][2] = {type:"A", tresor:0}
+    var test = update_map_player(worldMap,player)
+
+    expect(test).toStrictEqual({'worldMap' : expected_worldMap, 'player': player, 'err': "player met another player"})
+
+  })
+
+  it('should block because of mountain', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "O",
+                  tresors: 0,
+                  x: 1,
+                  y: 1}
+    worldMap[1][0] = {type:"M", tresor:0}
+    worldMap[1][1] = {type:"A", tresor:0}
+    expected_worldMap[1][0] = {type:"M", tresor:0}
+    expected_worldMap[1][1] = {type:"A", tresor:0}
+    var test = update_map_player(worldMap,player)
+    expect(test).toStrictEqual({'worldMap' : expected_worldMap, 'player': player, 'err': "player met a mountain"})
+  })
+
+ it('should advance to left and change position of player', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "O",
+                  tresors: 0,
+                  x: 1,
+                  y: 1}
+
+    let expected_player = {movements: ["A"],
+                  name: "test",
+                  orientation: "O",
+                  tresors: 0,
+                  x: 0,
+                  y: 1}
+
+    worldMap[1][1] = {type:"A", tresor:0}
+    expected_worldMap[1][0]={type:"A", tresor:0}
+    var test=update_map_player(worldMap,player)
+    expect(test).toStrictEqual({'worldMap' : expected_worldMap, 'player': expected_player, 'err': ""})
+  })
+
+  it('should advance to right and change position of player', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "E",
+                  tresors: 0,
+                  x: 1,
+                  y: 1}
+
+    let expected_player = {movements: ["A"],
+                  name: "test",
+                  orientation: "E",
+                  tresors: 0,
+                  x: 2,
+                  y: 1}
+
+    worldMap[1][1] = {type:"A", tresor:0}
+    expected_worldMap[1][2]={type:"A", tresor:0}
+    var test=update_map_player(worldMap,player)
+    expect(test).toStrictEqual({'worldMap' : expected_worldMap, 'player': expected_player, 'err': ""})
+  })
+
+  it('should advance to up and change position of player', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "N",
+                  tresors: 0,
+                  x: 1,
+                  y: 1}
+
+    let expected_player = {movements: ["A"],
+                  name: "test",
+                  orientation: "N",
+                  tresors: 0,
+                  x: 1,
+                  y: 0}
+
+    worldMap[1][1] = {type:"A", tresor:0}
+    expected_worldMap[0][1]={type:"A", tresor:0}
+    var test=update_map_player(worldMap,player)
+    expect(test).toStrictEqual({'worldMap' : expected_worldMap, 'player': expected_player, 'err': ""})
+  })
+
+  it('should advance to down and change position of player', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "S",
+                  tresors: 0,
+                  x: 1,
+                  y: 1}
+
+    let expected_player = {movements: ["A"],
+                  name: "test",
+                  orientation: "S",
+                  tresors: 0,
+                  x: 1,
+                  y: 2}
+
     worldMap[1][1] = {type:"A", tresor:0}
     expected_worldMap[2][1]={type:"A", tresor:0}
-    var test=update_map_player(worldMap,player).worldMap
-    expect(test).toStrictEqual(expected_worldMap)
+    var test=update_map_player(worldMap,player)
+    expect(test).toStrictEqual({'worldMap' : expected_worldMap, 'player': expected_player, 'err': ""})
   })
 
   it('should be oriented E', () => {
