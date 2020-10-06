@@ -1,6 +1,6 @@
 export function update_map_player(worldMap, player){
   let coordonnee={x:0,y:0}
-  console.log('player', JSON.parse(JSON.stringify(player)))
+
   switch (player.orientation) {
     case 'N':
       coordonnee={y:-1, x:0}
@@ -15,6 +15,7 @@ export function update_map_player(worldMap, player){
       coordonnee={y:0, x:-1}
       break
   }
+
   if (player.y+coordonnee.y < 0 || player.x+coordonnee.x < 0 ||
       player.y+coordonnee.y >= worldMap.length || player.x + coordonnee.x >= worldMap[player.y].length) {
     console.log('player sorti de la map')

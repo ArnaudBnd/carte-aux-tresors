@@ -1,6 +1,6 @@
 import { update_map_player } from './updateMapPlayer'
   
-export function move(movement, worldMap, player, tresors) {
+export function move(movement, worldMap, player) {
   switch (movement) {
     case 'A':
       let update = update_map_player(worldMap,player)
@@ -24,6 +24,7 @@ export function move(movement, worldMap, player, tresors) {
       }
       break
     case 'D':
+    console.log('player', player)
       switch (player.orientation) {
         case 'N':
           player.orientation = 'E'

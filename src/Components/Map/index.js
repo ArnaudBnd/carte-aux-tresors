@@ -29,7 +29,6 @@ export function MapInit({ coordonnes }) {
     let mapH = ''
     let mapW = ''
     let players = []
-    let tresors = []
 
     coordonnes.map(element => {
       const elmt = element[0].split('-')
@@ -56,11 +55,6 @@ export function MapInit({ coordonnes }) {
           name: elmt[1]
         })
       } else if(elmt[0].includes('T')){
-        tresors.push({
-          x: parseInt(elmt[1]),
-          y: parseInt(elmt[2]),
-          nbr: parseInt(elmt[3])
-        })
         world[elmt[2]][elmt[1]] = {type : '0', tresor : parseInt(elmt[3])}
       } else {
         world[elmt[2]][elmt[1]] = {type : elmt[0], tresor : 0}
@@ -71,8 +65,7 @@ export function MapInit({ coordonnes }) {
       world,
       mapH,
       mapW,
-      players,
-      tresors
+      players
     })
   }
 
@@ -80,7 +73,7 @@ export function MapInit({ coordonnes }) {
    * Jeu de(s) l'aventurier(s) en fonction des déplacements récupérés
    */
   function playMovement() {
-    const { players, world, tresors } = state
+    const { players, world } = state
     let no_more_movement = false
     let i = 0
 
@@ -89,7 +82,7 @@ export function MapInit({ coordonnes }) {
 
       players.forEach((player, index) => {
         if(players[index].movements[i] !== undefined) {
-          players[index] = move(players[index].movements[i], world, players[index], tresors)
+          players[index] = move(players[index].movements[i], world, players[index])
           if(players[index].movements[i+1] !== undefined) {
             no_more_movement = false
           }

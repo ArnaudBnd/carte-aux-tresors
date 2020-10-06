@@ -1,4 +1,5 @@
 import React from 'react'
+import { update_map_player } from '../Components/Map/actions/updateMapPlayer'
 import { move } from '../Components/Map/actions/movePlayer'
 import Enzyme from 'enzyme'
 import { configure, shallow } from 'enzyme'
@@ -8,21 +9,22 @@ import Adapter from 'enzyme-adapter-react-16'
 Enzyme.configure({ adapter: new Adapter() })
 
 describe("Movement ", () => {
-  // let wrapper
   let worldMap = []
   let expected_worldMap = []
-  // const setState = jest.fn()
-  // const useStateSpy = jest.spyOn(React, 'useState')
-  // useStateSpy.mockImplementation((init) => [init, setState])
 
   beforeEach(() => {
+    worldMap = []
+    expected_worldMap = []
+
     for (var i=0; i<3; i++) {
       worldMap.push([])
+      expected_worldMap.push([])
+
       for (var j=0; j<3; j++) {
-        worldMap[i].push([{type:0, tresor:0}])
+        worldMap[i].push({type:"0", tresor:0})
+        expected_worldMap[i].push({type:"0", tresor:0})
       }
     }
-    expected_worldMap = worldMap
   })
 
   it('should block player', () => {
@@ -32,8 +34,151 @@ describe("Movement ", () => {
                   tresors: 0,
                   x: 1,
                   y: 1};
+    worldMap[1][1] = {type:"A", tresor:0}
+    worldMap[1][2] = {type:"A", tresor:0}
+    expected_worldMap[1][1] = {type:"A", tresor:0}
+    expected_worldMap[1][2] = {type:"A", tresor:0}
+    var test = update_map_player(worldMap,player).worldMap
+    expect([...test]).toStrictEqual([...expected_worldMap])
+  })
+
+ it('should advance to left', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "E",
+                  tresors: 0,
+                  x: 1,
+                  y: 1};
+    worldMap[1][1] = {type:"A", tresor:0}
     expected_worldMap[1][2]={type:"A", tresor:0}
-    var test=move(worldMap,player)
-    expect(test.worldMap).toBe(expected_worldMap)
+    var test=update_map_player(worldMap,player).worldMap
+    expect(test).toStrictEqual(expected_worldMap)
+  })
+
+  it('should advance to right', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "O",
+                  tresors: 0,
+                  x: 1,
+                  y: 1};
+    worldMap[1][1] = {type:"A", tresor:0}
+    expected_worldMap[1][0]={type:"A", tresor:0}
+    var test=update_map_player(worldMap,player).worldMap
+    expect(test).toStrictEqual(expected_worldMap)
+  })
+
+  it('should advance to up', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "N",
+                  tresors: 0,
+                  x: 1,
+                  y: 1};
+    worldMap[1][1] = {type:"A", tresor:0}
+    expected_worldMap[0][1]={type:"A", tresor:0}
+    var test=update_map_player(worldMap,player).worldMap
+    expect(test).toStrictEqual(expected_worldMap)
+  })
+
+  it('should advance to down', () => {
+    let player = {movements: ["A"],
+                  name: "test",
+                  orientation: "S",
+                  tresors: 0,
+                  x: 1,
+                  y: 1};
+    worldMap[1][1] = {type:"A", tresor:0}
+    expected_worldMap[2][1]={type:"A", tresor:0}
+    var test=update_map_player(worldMap,player).worldMap
+    expect(test).toStrictEqual(expected_worldMap)
+  })
+
+  it('should be oriented E', () => {
+    let player = {
+      movements: ["D"],
+      name: "test",
+      orientation: "N",
+      tresors: 0,
+      x: 1,
+      y: 1
+    }
+
+    worldMap[1][1] = {type:"A", tresor:0}
+    let expected_player = { 
+      movements: ["D"],
+      name: "test",
+      orientation: "E",
+      tresors: 0,
+      x: 1,
+      y: 1}
+    let player_outcome = move(player.movements[0], worldMap, player)
+    expect(player_outcome).toStrictEqual(expected_player)
+  })
+
+  it('should be oriented E', () => {
+    let player = {
+      movements: ["D"],
+      name: "test",
+      orientation: "S",
+      tresors: 0,
+      x: 1,
+      y: 1
+    }
+
+    worldMap[1][1] = {type:"A", tresor:0}
+    let expected_player = { 
+      movements: ["D"],
+      name: "test",
+      orientation: "O",
+      tresors: 0,
+      x: 1,
+      y: 1}
+    let player_outcome = move(player.movements[0], worldMap, player)
+    expect(player_outcome).toStrictEqual(expected_player)
+  })
+
+  it('should be oriented N', () => {
+    let player = {
+      movements: ["D"],
+      name: "test",
+      orientation: "O",
+      tresors: 0,
+      x: 1,
+      y: 1
+    }
+
+    worldMap[1][1] = {type:"A", tresor:0}
+    let expected_player = { 
+      movements: ["D"],
+      name: "test",
+      orientation: "N",
+      tresors: 0,
+      x: 1,
+      y: 1}
+    let player_outcome = move(player.movements[0], worldMap, player)
+    expect(player_outcome).toStrictEqual(expected_player)
+  })
+
+  it('should be oriented S', () => {
+    let player = {
+      movements: ["D"],
+      name: "test",
+      orientation: "E",
+      tresors: 0,
+      x: 1,
+      y: 1
+    }
+
+    worldMap[1][1] = {type:"A", tresor:0}
+    let expected_player = { 
+      movements: ["D"],
+      name: "test",
+      orientation: "S",
+      tresors: 0,
+      x: 1,
+      y: 1}
+    let player_outcome = move(player.movements[0], worldMap, player)
+    expect(player_outcome).toStrictEqual(expected_player)
   })
 })
