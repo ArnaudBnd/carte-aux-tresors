@@ -25,7 +25,6 @@ export function MapInit({ coordonnes }) {
    * @param coordonnes
    */
   function initDataBoard(coordonnes) {
-    console.log('coordonnes', coordonnes)
     const world = []
     let mapH = ''
     let mapW = ''

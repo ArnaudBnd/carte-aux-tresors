@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MapInit  has the initial state count of zero 1`] = `
+<div>
+  <table>
+    <tbody />
+  </table>
+  <br />
+  <DisplayFinalPosition
+    players={Array []}
+    world={Array []}
+  />
+</div>
+`;
+
+exports[`MapInit  tests if component renders correctly  1`] = `
+<div>
+  <table>
+    <tbody />
+  </table>
+  <br />
+  <button
+    id="buttonPlayGame"
+    onClick={[Function]}
+    style={
+      Object {
+        "display": "none",
+        "margin": "0 auto",
+      }
+    }
+  >
+    PLAY
+  </button>
+</div>
+`;

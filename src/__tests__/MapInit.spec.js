@@ -1,5 +1,6 @@
 import React from 'react'
 import { MapInit } from '../Components/Map/index'
+import { DisplayFinalPosition } from '../Components/Map/actions/displayFinalPosition'
 import Enzyme from 'enzyme'
 import { configure, shallow } from 'enzyme'
 import toJson from 'enzyme-to-json'
@@ -13,13 +14,27 @@ describe("MapInit ", () => {
   const useStateSpy = jest.spyOn(React, 'useState')
   useStateSpy.mockImplementation((init) => [init, setState])
 
+ const coordonnes = [
+    ["C​-3-4"],
+    ["M​-1-0"],
+    ["M​-2-1"],
+    ["T​-0-3-2"],
+    ["T​-1-3-3"],
+    ["A​-LARA-1-1-S-AADADAGGA"],
+    ["A​-NABIL-1-2-E-A"]
+  ]
+
   beforeEach(() => {
-    wrapper = shallow(<MapInit />)
+    wrapper = shallow(<MapInit coordonnes={coordonnes} />)
   })
 
   afterEach(() => {
-    jest.clearAllMocks();
-  });
+    jest.clearAllMocks()
+  })
+
+  it('tests if component renders correctly ', () => {
+    expect(wrapper).toMatchSnapshot()
+  })
 
   it('has the initial state count of zero', () => {
     wrapper.find('button').props().onClick()
@@ -30,6 +45,7 @@ describe("MapInit ", () => {
       players: [],
       play: false,
     })
+    expect(wrapper).toMatchSnapshot()
   })
 
   it('renders not null', () => {

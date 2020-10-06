@@ -26,8 +26,6 @@ export function InputFolder() {
         }
       })
 
-      console.log('suppressComment', suppressComment)
-
       setMapCoordonnes(suppressComment)
     }
 

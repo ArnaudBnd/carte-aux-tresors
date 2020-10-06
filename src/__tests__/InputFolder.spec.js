@@ -44,4 +44,32 @@ describe("InputFolder", () => {
   it('calls handleChange when upload file is selected', () => {
     wrapper.find('input').simulate('onChange')
   })
+
+  it('simulates onChange who select file', () => {
+    const fileContents = 'file contents'
+    const file = new Blob([fileContents], {type : 'text/plain'})
+
+    wrapper.find('input').simulate('onChange', {target: {files: [file]}})
+  })
+
+  it('simulate select file', () => {
+    const event = {
+        target: {
+            files: [{ 
+              lastModified: 1601630992047,
+              name: "test_mis_en_page.txt",
+              size: 163,
+              type: "text/plain"
+          }]
+        }
+    }
+
+    jest.spyOn(global, 'FileReader').mockImplementation(function () {
+      this.readAsText = jest.fn()
+    })
+
+    wrapper.find('input[type="file"]').simulate('change', event) 
+    let reader = FileReader.mock.instances[0]
+    expect(reader.onload).toStrictEqual(expect.any(Function))
+  })
 })
