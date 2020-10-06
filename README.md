@@ -11,7 +11,7 @@
 * npm test
 ```
 
-### Tests effectués avec Jest:
+### Tests effectués avec Jest (MovePlayer.spec.js):
 * Vérification de l'incrémentation du nombre de trésor par joueur ainsi que par case.
 * Vérification de la sorti de map du joueur, en haut, en bas, à gauche et à droite.
 * Vérification si un joueur rencontre un autre joueur.
