@@ -4,9 +4,6 @@ import React, { Component }  from 'react'
  * Affichage de la map
  */
 export function DisplayBoard({ players, world }) {
-  // console.log('player', players)
-  // console.log('world', world)
-
   const button = document.getElementById('buttonPlayGame')
 
   if(button.style.display === 'none') {
